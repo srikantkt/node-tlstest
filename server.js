@@ -29,7 +29,7 @@ httpServer.on('timeout', (socket) => {
 // create HTTPS server
 var httpOptions = {
     hostname: 'localhost',
-    handshakeTimeout: 5000,
+    handshakeTimeout: cmdOptions.t || 5000,
     secureProtocol: cmdOptions.m || 'TLSv1_server_method',
     key: fs.readFileSync('key.pem'),
     cert: fs.readFileSync('cert.pem')
