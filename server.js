@@ -3,6 +3,7 @@
 var https = require('https');
 var http = require('http');
 const fs = require('fs');
+var cmdOptions = require('minimist')(process.argv.slice(2));
 
 var body = "Hello World\n";
 
@@ -18,8 +19,8 @@ var responseHandler = (req, res) => {
 };
 
 // create HTTP server
-var httpServer = http.createServer(responseHandler).listen(8080);
-httpServer.timeout = 10000;
+var httpServer = http.createServer(responseHandler).listen(cmdOptions.p || 8080);
+httpServer.timeout = cmdOptions.t || 10000;
 httpServer.on('timeout', (socket) => {
     console.error('ERROR: timeout on connection from [%s]:[%d]', socket.remoteAddress, socket.remotePort);
     socket.end();
@@ -28,13 +29,13 @@ httpServer.on('timeout', (socket) => {
 // create HTTPS server
 var httpOptions = {
     hostname: 'localhost',
-    port: 8443,
     handshakeTimeout: 5000,
-    secureProtocol: 'TLSv1_server_method',
-    key: fs.readFileSync('key.pem'), 
+    secureProtocol: cmdOptions.m || 'TLSv1_server_method',
+    key: fs.readFileSync('key.pem'),
     cert: fs.readFileSync('cert.pem')
 };
-var httpsServer = https.createServer(httpOptions, responseHandler).listen(8443);
+
+var httpsServer = https.createServer(httpOptions, responseHandler).listen(cmdOptions.s || 8443);
 httpsServer.timeout = 30000;
 httpsServer.on('timeout', (socket) => {
     console.error('ERROR: timeout on connection from [%s]:[%d]', socket.remoteAddress, socket.remotePort);

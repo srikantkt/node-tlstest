@@ -3,15 +3,16 @@
 var request = require('request');
 var https = require('https');
 var fs = require('fs');
+var cmdOptions = require('minimist')(process.argv.slice(2));
 
 var requestOptions = {
-    url: 'https://localhost:8443/test', 
+    url: cmdOptions.u || 'http://localhost:8080/test', 
     headers: {
         'User-Agent': 'FunkyClient'
     },
     agentOptions: {
         ca: fs.readFileSync('cert.pem'),
-        secureProtocol: 'TLSv1_1_method'
+        secureProtocol: cmdOptions.m || 'TLSv1_1_method'
     }
 };
 
